@@ -7,7 +7,7 @@ cat << EOF > snipe-it.conf
 # ------------------------------
 # example.org is _not_ a valid hostname, use a fqdn here.
 
-SNIPEIT_HOSTNAME=asset.dotnot.pl
+SNIPEIT_HOSTNAME=snipe-it.example.org
 
 # ------------------------------
 # SQL database configuration
