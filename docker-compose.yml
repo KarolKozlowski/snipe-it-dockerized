@@ -1,0 +1,65 @@
+---
+version: "2.1"
+
+services:
+  mariadb:
+    image: lscr.io/linuxserver/mariadb:latest
+    container_name: mariadb
+    environment:
+      - PUID=${DB_PUID}
+      - PGID=${DB_PGID}
+      - MYSQL_ROOT_PASSWORD=${DBROOT}
+      - TZ=${TZ}
+      - MYSQL_DATABASE=${DBNAME}
+      - MYSQL_USER=${DBUSER}
+      - MYSQL_PASSWORD=${DBPASS}
+    volumes:
+      - mariadb-vol-1:/config
+    ports:
+      - 3306
+    restart: unless-stopped
+    networks:
+      snipe-it-network:
+        aliases:
+          - mysql
+
+  snipe-it:
+    depends_on:
+      - mariadb
+    image: lscr.io/linuxserver/snipe-it:latest
+    container_name: snipe-it
+    environment:
+      - PUID=${DB_PUID}
+      - PGID=${DB_PGID}
+      - APP_URL=https://${SNIPEIT_HOSTNAME}
+      - MYSQL_PORT_3306_TCP_ADDR=mariadb
+      - MYSQL_PORT_3306_TCP_PORT=3306
+      - MYSQL_DATABASE=${DBNAME}
+      - MYSQL_USER=${DBUSER}
+      - MYSQL_PASSWORD=${DBPASS}
+      - TZ=${TZ}
+
+    volumes:
+      - snipe-it-vol-1:/config
+    ports:
+      - 8080:80
+    restart: unless-stopped
+    networks:
+      snipe-it-network:
+        aliases:
+          - snipe-it
+
+networks:
+  snipe-it-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-snipe-it
+    enable_ipv6: false
+    #    ipam:
+    #      driver: default
+    #      config:
+    #        - subnet: ${IPV4_NETWORK:-172.23.1}.0/24
+
+volumes:
+  mariadb-vol-1:
+  snipe-it-vol-1:
