@@ -15,8 +15,6 @@ services:
       - MYSQL_PASSWORD=${DBPASS}
     volumes:
       - mariadb-vol-1:/config
-    ports:
-      - 3306
     restart: unless-stopped
     networks:
       snipe-it-network:
@@ -42,7 +40,7 @@ services:
     volumes:
       - snipe-it-vol-1:/config
     ports:
-      - 8080:80
+      - 8708:80
     restart: unless-stopped
     networks:
       snipe-it-network:
